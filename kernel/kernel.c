@@ -6,7 +6,7 @@
 __attribute__((noreturn)) void kmain(u32 mb2_boot, u32 mb2_magic)
 {
     if (mb2_magic != MULTIBOOT2_BOOTLOADER_MAGIC) {
-        kprintf(VGA_COLOR_WHITE, "Kernel wasn't booted by GRUB Multiboot2. Aborting.");
+        kprintf("Kernel wasn't booted by GRUB Multiboot2. Aborting.");
         hlt();
         goto terminate;
     }

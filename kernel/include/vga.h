@@ -30,7 +30,7 @@ struct vga_char {
     u8 color;
 };
 
-#define kprintf(fmt, ...) kprint(VGA_COLOR_WHITE, fmt, #__VA_ARGS__);
+#define kprintf(fmt, ...) kprint(VGA_COLOR_WHITE, fmt, ##__VA_ARGS__);
 
 void kprintc(u8 ch, u8 color);
 void kprintint(u32 num, u8 color);
