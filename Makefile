@@ -11,6 +11,8 @@ OUTPUT_FILE = phantom.iso
 
 OBJFILES := $(BUILD_DIR)multiboot.o \
 			$(BUILD_DIR)entry.o \
+			$(BUILD_DIR)kernel.o \
+			$(BUILD_DIR)vga.o \
 
 .PHONY: kernel
 
@@ -21,3 +23,9 @@ kernel: $(OBJFILES)
 
 $(BUILD_DIR)%.o: kernel/boot/%.asm
 	$(ASSEMBLER) -felf32 -o $@ $<
+
+$(BUILD_DIR)%.o: kernel/%.c
+	$(CC) -nostdlib -m32 -o $@ -c $<
+
+$(BUILD_DIR)%.o: kernel/src/%.c
+	$(CC) -nostdlib -m32 -o $@ -c $<
