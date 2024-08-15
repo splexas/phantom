@@ -12,7 +12,7 @@ __attribute__((noreturn)) void kmain(u32 mb2_boot, u32 mb2_magic)
     }
 
     if (mb2_boot & 7) {
-        kprintf("Unaligned mbi: 0x%x. Aborting.\n", mb2_boot);
+        kprintf("Unaligned mbi: 0x%x. Aborting.", mb2_boot);
         hlt();
         goto terminate;
     }
@@ -23,7 +23,7 @@ __attribute__((noreturn)) void kmain(u32 mb2_boot, u32 mb2_magic)
     u32 max_mem_addr = 1024 * 1024;
 
     struct multiboot_tag *tag;
-    for (tag = (struct multiboot_tag *) (mb2_boot + 8);
+    for (tag = (struct multiboot_tag *)(mb2_boot + 8);
         tag->type != MULTIBOOT_TAG_TYPE_END;
         tag = (struct multiboot_tag *)((multiboot_uint8_t *)tag + ((tag->size + 7) & ~7)))
     {
@@ -36,7 +36,7 @@ __attribute__((noreturn)) void kmain(u32 mb2_boot, u32 mb2_magic)
             }
             case MULTIBOOT_TAG_TYPE_BOOT_LOADER_NAME: {
                 kprintf("Boot loader name = %s\n",
-                        ((struct multiboot_tag_string *) tag)->string);
+                        ((struct multiboot_tag_string *)tag)->string);
                 break;
             }
         }
