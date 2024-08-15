@@ -19,7 +19,7 @@ OBJFILES := $(BUILD_DIR)multiboot.o \
 kernel: $(OBJFILES)
 	$(LD) -T$(LINKER_PATH) -melf_i386 $^ -o $(ISO_DIR)boot/kernel.elf
 	$(GRUB_MKRESCUE) -o $(OUTPUT_FILE) $(ISO_DIR)
-	$(QEMU) -cdrom $(OUTPUT_FILE)
+	$(QEMU) -m 2G -cdrom $(OUTPUT_FILE)
 
 $(BUILD_DIR)%.o: kernel/boot/%.asm
 	$(ASSEMBLER) -felf32 -o $@ $<
