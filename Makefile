@@ -12,6 +12,7 @@ OUTPUT_FILE = phantom.iso
 OBJFILES := $(BUILD_DIR)multiboot.o \
 			$(BUILD_DIR)entry.o \
 			$(BUILD_DIR)kernel.o \
+			$(BUILD_DIR)mb2.o \
 			$(BUILD_DIR)vga.o \
 			$(BUILD_DIR)gdt.o \
 			
