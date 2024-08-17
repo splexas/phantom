@@ -2,6 +2,7 @@
 #include "include/multiboot2.h"
 #include "include/types.h"
 #include "include/vga.h"
+#include "include/gdt.h"
 
 __attribute__((noreturn)) void kmain(u32 mb2_boot, u32 mb2_magic)
 {
@@ -17,10 +18,9 @@ __attribute__((noreturn)) void kmain(u32 mb2_boot, u32 mb2_magic)
         goto terminate;
     }
 
-    // Lower memory starts at address 0, and upper memory starts at address 1 megabyte
-
-    u32 min_mem_addr = 0;
-    u32 max_mem_addr = 1024 * 1024; // including conventional memory
+    u32 min_mem_addr = 0x100000;
+    u32 max_mem_addr = 0;
+    u8 stack_init = 0;
 
     struct multiboot_tag *tag;
     for (tag = (struct multiboot_tag *)(mb2_boot + 8);
@@ -30,20 +30,39 @@ __attribute__((noreturn)) void kmain(u32 mb2_boot, u32 mb2_magic)
         switch (tag->type) {
             case MULTIBOOT_TAG_TYPE_BASIC_MEMINFO: {
                 struct multiboot_tag_basic_meminfo *mem = (struct multiboot_tag_basic_meminfo *)tag;
-                kprintf("Mem lower: 0x%x KB\nMem higher: 0x%x KB\n", mem->mem_lower, mem->mem_upper);
-                max_mem_addr += mem->mem_upper * 1024;
+                max_mem_addr = mem->mem_upper * 1024;
                 break;
             }
-            case MULTIBOOT_TAG_TYPE_BOOT_LOADER_NAME: {
-                kprintf("Boot loader name = %s\n",
-                        ((struct multiboot_tag_string *)tag)->string);
+            case MULTIBOOT_TAG_TYPE_MMAP: {
+                multiboot_memory_map_t *mmap;
+                for (mmap = ((struct multiboot_tag_mmap *)tag)->entries;
+                    (multiboot_uint8_t *)mmap < (multiboot_uint8_t *)tag + tag->size;
+                    mmap = (multiboot_memory_map_t *) 
+                    ((unsigned long)mmap
+                        + ((struct multiboot_tag_mmap *)tag)->entry_size))
+                {
+                    if ((u32)mmap->addr != 0x100000 && mmap->type == MULTIBOOT_MEMORY_AVAILABLE) {
+                        kprintf("Initializing the stack.\n");
+                        u32 stack_ptr = (u32)mmap->addr + (u32)mmap->len;
+                        asm volatile("mov %0, %%esp" :: "r"(stack_ptr));
+                        stack_init = 1;
+                        break;
+                    }
+                }
                 break;
             }
         }
     }
 
-    u32 total_memory = max_mem_addr - min_mem_addr;
-    kprintf("Total RAM: %d bytes (%d MB)\n", total_memory, total_memory/1024/1024);
+    if (stack_init == 0) { 
+        kprintf("Kernel has failed to find space for stack. Aborting.");
+        hlt();
+        goto terminate;
+    }
+
+    /* Initialize GDT */
+    gdt_load();
+    kprintf("Loaded the GDT!\n");
 
 terminate:
     for (;;);
