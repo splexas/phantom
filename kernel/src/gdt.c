@@ -1,8 +1,9 @@
 #include "../include/gdt.h"
 #include "../include/tss.h"
 
+struct gdt_descriptor gdt_desc;
+
 static struct gdt_segment_desc gdt_entries[5];
-struct tss tss;
 
 void gdt_set_gate(u32 index, u32 base, u32 limit, u8 access_byte, u8 flags)
 {
@@ -15,26 +16,6 @@ void gdt_set_gate(u32 index, u32 base, u32 limit, u8 access_byte, u8 flags)
     gdt_entries[index].high_base = (base >> 24) & 0xff;
 }
 
-void gdt_load()
-{
-    struct gdt_descriptor desc;
-    desc.size = sizeof(gdt_entries) - 1;
-    desc.offset = (u32)gdt_entries;
-    asm volatile("lgdt %0" :: "m" (desc));
-    // reload the segments
-    asm volatile(
-        "mov $0x10, %%ax\n\t"
-        "mov %%ax, %%ds\n\t"
-        "mov %%ax, %%es\n\t"
-        "mov %%ax, %%fs\n\t"
-        "mov %%ax, %%gs\n\t"
-        "mov %%ax, %%ss\n\t"
-        "ljmp $0x08, $.reload_cs\n\t"
-        ".reload_cs:\n\t"
-        ::
-    );
-}
-
 void gdt_init()
 {
     gdt_set_gate(0, 0, 0, 0, 0);
@@ -43,5 +24,8 @@ void gdt_init()
     gdt_set_gate(3, 0, 0xfffff, 0xfa, 0xc);
     gdt_set_gate(4, 0, 0xfffff, 0xf2, 0xc);
     //gdt_set_gate(5, (u32)&tss, sizeof(tss) - 1, 0x89, 0);
-    gdt_load();
+
+    gdt_desc.size = sizeof(gdt_entries) - 1;
+    gdt_desc.offset = (u32)gdt_entries;
+    gdt_flush();
 }

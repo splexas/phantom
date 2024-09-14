@@ -15,6 +15,7 @@ OBJFILES := $(BUILD_DIR)multiboot.o \
 			$(BUILD_DIR)mb2.o \
 			$(BUILD_DIR)vga.o \
 			$(BUILD_DIR)gdt.o \
+			$(BUILD_DIR)s_gdt.o \
 			
 .PHONY: kernel
 default: kernel
@@ -27,11 +28,19 @@ kernel: $(OBJFILES)
 run: $(OUTPUT_FILE)
 	$(QEMU) -m 2G -d int  -cdrom $(OUTPUT_FILE)
 
+.PHONY: clean
+clean: $(BUILD_DIR)
+	rm -rf $(BUILD_DIR)
+	mkdir -p $(BUILD_DIR)
+
 $(BUILD_DIR)%.o: kernel/boot/%.asm
 	$(ASSEMBLER) -felf32 -o $@ $<
 
+$(BUILD_DIR)%.o: kernel/stub/%.asm
+	$(ASSEMBLER) -felf32 -o $@ $<
+
 $(BUILD_DIR)%.o: kernel/%.c
-	$(CC) -nostdlib -m32 -o $@ -c $<
+	$(CC) -Wall -Wextra -nostdlib -m32 -o $@ -c $<
 
 $(BUILD_DIR)%.o: kernel/src/%.c
-	$(CC) -nostdlib -m32 -o $@ -c $<
+	$(CC) -Wall -Wextra -nostdlib -m32 -o $@ -c $<

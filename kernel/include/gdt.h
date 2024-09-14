@@ -18,8 +18,10 @@ struct gdt_descriptor {
     u32 offset;
 } __attribute__((packed));
 
+extern struct gdt_descriptor gdt_desc;
+extern void gdt_flush();
+
 void gdt_set_gate(u32 index, u32 base, u32 limit, u8 access_byte, u8 flags);
-void gdt_load();
 void gdt_init();
 
 #endif

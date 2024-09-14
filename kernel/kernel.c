@@ -34,7 +34,7 @@ __attribute__((noreturn)) void kmain(u32 mb2_boot_addr, u32 mb2_magic)
     //SET_ESP(info.stack_ptr);
 
     /* Initialize GDT */
-    gdt_load();
+    gdt_init();
     log_ok("Loaded GDT!\n");
 
 terminate:
