@@ -33,9 +33,12 @@ struct vga_char {
 
 #define kprintf(fmt, ...) kprint(VGA_COLOR_WHITE, fmt, ##__VA_ARGS__);
 
-void kprintc(u8 ch, u8 color);
-void kprintint(u32 num, u8 color);
+void kprintc(s8 ch, u8 color);
+
+void kprintuint(u32 num, u8 color);
+void kprintsint(s32 num, u8 color);
+
 void kprinthex(u32 num, u8 color);
-void kprint(u8 color, u8 *fmt, ...);
+void kprint(u8 color, s8 *fmt, ...);
 
 #endif

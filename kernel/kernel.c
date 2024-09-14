@@ -30,8 +30,8 @@ __attribute__((noreturn)) void kmain(u32 mb2_boot_addr, u32 mb2_magic)
         goto terminate;
     }
 
-    log_debug("esp: 0x%x\n", info.stack_ptr);
-    //SET_ESP(info.stack_ptr);
+    log_debug("esp: %p\n", info.stack_ptr);
+    SET_ESP(info.stack_ptr);
 
     /* Initialize GDT */
     gdt_init();
