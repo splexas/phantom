@@ -4,35 +4,39 @@
 #include "types.h"
 
 struct tss {
-    u8 link : 4;
-    u8 esp0 : 4;
-    u8 ss0 : 4;
-    u8 esp1 : 4;
-    u8 ss1 : 4;
-    u8 esp2 : 4;
-    u8 ss2 : 4;
-    u8 cr3 : 4;
-    u8 eip : 4;
-    u8 eflags : 4;
-    u8 eax : 4;
-    u8 ecx : 4;
-    u8 edx : 4;
-    u8 ebx : 4;
-    u8 esp : 4;
-    u8 ebp : 4;
-    u8 esi : 4;
-    u8 edi : 4;
-    u8 es : 4;
-    u8 cs : 4;
-    u8 ss : 4;
-    u8 ds : 4;
-    u8 fs : 4;
-    u8 gs : 4;
-    u8 ldtr : 4;
-    u8 iopb : 4;
-    u8 ssp : 4;
+    u32 link; // previous tss segment selector
+    u32 esp0;
+    u32 ss0;
+    u32 esp1;
+    u32 ss1;
+    u32 esp2;
+    u32 ss2;
+    u32 cr3;
+    u32 eip;
+    u32 eflags;
+    u32 eax;
+    u32 ecx;
+    u32 edx;
+    u32 ebx;
+    u32 esp;
+    u32 ebp;
+    u32 esi;
+    u32 edi;
+    u32 es;
+    u32 cs;
+    u32 ss;
+    u32 ds;
+    u32 fs;
+    u32 gs;
+    u32 ldtr;
+    u32 iopb;
+    u32 ssp;
 };
 
+// defined in GDT file
 extern struct tss tss;
+
+void tss_load(u32 esp0);
+void tss_init();
 
 #endif

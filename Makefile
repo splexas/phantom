@@ -16,14 +16,16 @@ OBJFILES := $(BUILD_DIR)multiboot.o \
 			$(BUILD_DIR)vga.o \
 			$(BUILD_DIR)gdt.o \
 			
-.PHONY: kernel run
+.PHONY: kernel
+default: kernel
 
 kernel: $(OBJFILES)
 	$(LD) -T$(LINKER_PATH) -melf_i386 $^ -o $(ISO_DIR)boot/kernel.elf
 	$(GRUB_MKRESCUE) -o $(OUTPUT_FILE) $(ISO_DIR)
 
+.PHONY: kernel
 run: $(OUTPUT_FILE)
-	$(QEMU) -m 2G -cdrom $(OUTPUT_FILE)
+	$(QEMU) -m 2G -d int  -cdrom $(OUTPUT_FILE)
 
 $(BUILD_DIR)%.o: kernel/boot/%.asm
 	$(ASSEMBLER) -felf32 -o $@ $<

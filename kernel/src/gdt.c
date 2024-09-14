@@ -1,7 +1,7 @@
 #include "../include/gdt.h"
 #include "../include/tss.h"
 
-static struct gdt_segment_desc gdt_entries[6];
+static struct gdt_segment_desc gdt_entries[5];
 struct tss tss;
 
 void gdt_set_gate(u32 index, u32 base, u32 limit, u8 access_byte, u8 flags)
@@ -21,6 +21,18 @@ void gdt_load()
     desc.size = sizeof(gdt_entries) - 1;
     desc.offset = (u32)gdt_entries;
     asm volatile("lgdt %0" :: "m" (desc));
+    // reload the segments
+    asm volatile(
+        "mov $0x10, %%ax\n\t"
+        "mov %%ax, %%ds\n\t"
+        "mov %%ax, %%es\n\t"
+        "mov %%ax, %%fs\n\t"
+        "mov %%ax, %%gs\n\t"
+        "mov %%ax, %%ss\n\t"
+        "ljmp $0x08, $.reload_cs\n\t"
+        ".reload_cs:\n\t"
+        ::
+    );
 }
 
 void gdt_init()
@@ -30,6 +42,6 @@ void gdt_init()
     gdt_set_gate(2, 0, 0xfffff, 0x92, 0xc);
     gdt_set_gate(3, 0, 0xfffff, 0xfa, 0xc);
     gdt_set_gate(4, 0, 0xfffff, 0xf2, 0xc);
-    gdt_set_gate(5, (u32)&tss, sizeof(tss) - 1, 0x89, 0);
+    //gdt_set_gate(5, (u32)&tss, sizeof(tss) - 1, 0x89, 0);
     gdt_load();
 }

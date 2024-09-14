@@ -7,15 +7,17 @@
 #include "include/vga.h"
 #include "include/gdt.h"
 
+#include "include/log.h"
+
 __attribute__((noreturn)) void kmain(u32 mb2_boot_addr, u32 mb2_magic)
 {
     if (mb2_magic != MULTIBOOT2_BOOTLOADER_MAGIC) {
-        kprintf("Kernel wasn't booted by GRUB Multiboot2. Aborting.");
+        log_err("Kernel wasn't booted by GRUB Multiboot2. Aborting.");
         goto terminate;
     }
 
     if (mb2_boot_addr & 7) {
-        kprintf("Unaligned mbi: 0x%x. Aborting.", mb2_boot_addr);
+        log_err("Unaligned mbi: 0x%x. Aborting.", mb2_boot_addr);
         goto terminate;
     }
 
@@ -24,16 +26,16 @@ __attribute__((noreturn)) void kmain(u32 mb2_boot_addr, u32 mb2_magic)
     mb2_parse(mb2_boot_addr, &info);
 
     if (!info.stack_ptr) {
-        kprintf("No suitable memory space was found for the stack. Aborting.");
+        log_err("No suitable memory space was found for the stack. Aborting.");
         goto terminate;
     }
 
-    kprintf("esp: %x\n", info.stack_ptr);
-    SET_ESP(info.stack_ptr);
+    log_debug("esp: 0x%x\n", info.stack_ptr);
+    //SET_ESP(info.stack_ptr);
 
     /* Initialize GDT */
     gdt_load();
-    kprintf("Loaded the GDT!\n");
+    log_ok("Loaded GDT!\n");
 
 terminate:
     HLT();
