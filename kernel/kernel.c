@@ -1,29 +1,29 @@
-#include "kernel.h"
+#include <kernel.h>
 
-#include "include/multiboot2.h"
-#include "include/mb2.h"
+#include <grub/multiboot2.h>
+#include <grub/mb2.h>
 
-#include "include/types.h"
-#include "include/vga.h"
-#include "include/gdt.h"
+#include <types.h>
+#include <core/vga.h>
+#include <core/gdt.h>
 
-#include "include/log.h"
+#include <log.h>
 
-__attribute__((noreturn)) void kmain(u32 mb2_boot_addr, u32 mb2_magic)
+__attribute__((noreturn)) void kmain(u32 mb2_addr, u32 mb2_magic)
 {
     if (mb2_magic != MULTIBOOT2_BOOTLOADER_MAGIC) {
         log_err("Kernel wasn't booted by GRUB Multiboot2. Aborting.");
         goto terminate;
     }
 
-    if (mb2_boot_addr & 7) {
-        log_err("Unaligned mbi: 0x%x. Aborting.", mb2_boot_addr);
+    if (mb2_addr & 7) {
+        log_err("Unaligned mbi: 0x%x. Aborting.", mb2_addr);
         goto terminate;
     }
 
     /* Parse necessary Multiboot2 data */
     struct mb2_info info;
-    mb2_parse(mb2_boot_addr, &info);
+    mb2_parse(mb2_addr, &info);
 
     if (!info.stack_ptr) {
         log_err("No suitable memory space was found for the stack. Aborting.");

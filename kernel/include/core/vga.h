@@ -1,7 +1,7 @@
 #ifndef VGA_H
 #define VGA_H
 
-#include "types.h"
+#include <types.h>
 
 #define VIDEO_MEMORY 0xb8000 
 #define MAX_COLUMNS 80

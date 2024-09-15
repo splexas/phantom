@@ -1,5 +1,4 @@
-#include "../include/gdt.h"
-#include "../include/tss.h"
+#include <core/gdt.h> 
 
 struct gdt_descriptor gdt_desc;
 

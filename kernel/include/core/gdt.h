@@ -1,7 +1,7 @@
 #ifndef GDT_H
 #define GDT_H
 
-#include "types.h"
+#include <types.h>
 
 struct gdt_segment_desc {
     u16 low_limit;

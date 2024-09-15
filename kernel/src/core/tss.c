@@ -1,4 +1,4 @@
-#include "../include/tss.h"
+#include <core/tss.h>
 
 void tss_load(u32 esp0)
 {

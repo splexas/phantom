@@ -1,5 +1,5 @@
-#include "../include/mb2.h"
-#include "../include/multiboot2.h"
+#include <grub/mb2.h>
+#include <grub/multiboot2.h>
 
 void mb2_parse(u32 mb2_boot_addr, struct mb2_info *info)
 {

@@ -1,5 +1,8 @@
 CC = gcc
 LD = ld
+
+CCFLAGS = -Ikernel/include/ -Ikernel/ -Wall -Wextra -nostdlib -m32
+
 LINKER_PATH = linker.ld
 ASSEMBLER = nasm
 GRUB_MKRESCUE = grub2-mkrescue
@@ -40,7 +43,16 @@ $(BUILD_DIR)%.o: kernel/stub/%.asm
 	$(ASSEMBLER) -felf32 -o $@ $<
 
 $(BUILD_DIR)%.o: kernel/%.c
-	$(CC) -Wall -Wextra -nostdlib -m32 -o $@ -c $<
+	$(CC) $(CCFLAGS) -o $@ -c $<
 
 $(BUILD_DIR)%.o: kernel/src/%.c
-	$(CC) -Wall -Wextra -nostdlib -m32 -o $@ -c $<
+	$(CC) $(CCFLAGS) -o $@ -c $<
+
+$(BUILD_DIR)%.o: kernel/src/%.c
+	$(CC) $(CCFLAGS) -o $@ -c $<
+
+$(BUILD_DIR)%.o: kernel/src/core/%.c
+	$(CC) $(CCFLAGS) -o $@ -c $<
+
+$(BUILD_DIR)%.o: kernel/src/grub/%.c
+	$(CC) $(CCFLAGS) -o $@ -c $<

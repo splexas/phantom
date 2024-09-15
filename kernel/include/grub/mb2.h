@@ -1,7 +1,7 @@
 #ifndef MB2_H
 #define MB2_H
 
-#include "types.h"
+#include <types.h>
 
 struct mb2_info {
     u32 mem_base_addr;

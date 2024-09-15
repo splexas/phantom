@@ -1,7 +1,7 @@
 #ifndef LOG_H
 #define LOG_H
 
-#include "vga.h"
+#include "core/vga.h"
 
 #define __log_tag(color, tag, fmt, ...) \
     kprintc('[', VGA_COLOR_WHITE); \

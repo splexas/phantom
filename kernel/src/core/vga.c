@@ -1,4 +1,4 @@
-#include "../include/vga.h"
+#include <core/vga.h>
 #include <stdarg.h>
 
 static u32 cursor_x = 0; // cannot be > MAX_COLUMNS
