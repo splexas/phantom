@@ -19,7 +19,7 @@ void idt_init()
 {
     // setup exceptions
     for (int i = 0; i < IDT_MAX_DESCRIPTORS; i++)
-        kprintf("%p\n", isr_exception_table[i]);
+        idt_set_gate(i, IDT_32BIT_INTERRUPT_GATE, 0, isr_exception_table[i]);
 
     idt_desc.offset = (u32)idt_gates;
     idt_desc.size = sizeof(struct idt_gate_desc) * IDT_MAX_DESCRIPTORS - 1;
