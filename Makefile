@@ -19,6 +19,9 @@ OBJFILES := $(BUILD_DIR)multiboot.o \
 			$(BUILD_DIR)vga.o \
 			$(BUILD_DIR)gdt.o \
 			$(BUILD_DIR)s_gdt.o \
+			$(BUILD_DIR)s_idt.o \
+			$(BUILD_DIR)isr.o \
+			$(BUILD_DIR)idt.o \
 			
 .PHONY: kernel
 default: kernel

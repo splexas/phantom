@@ -6,6 +6,7 @@
 #include <types.h>
 #include <core/vga.h>
 #include <core/gdt.h>
+#include <core/idt.h>
 
 #include <log.h>
 
@@ -36,6 +37,12 @@ __attribute__((noreturn)) void kmain(u32 mb2_addr, u32 mb2_magic)
     /* Initialize GDT */
     gdt_init();
     log_ok("Loaded GDT!\n");
+
+    /* Initialize IDT */
+    idt_init();
+    log_ok("Loaded IDT!\n");
+
+    int a = 2/0;
 
 terminate:
     HLT();
