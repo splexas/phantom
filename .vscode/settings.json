@@ -1,5 +1,7 @@
 {
     "files.associations": {
         "types.h": "c"
-    }
+    },
+    "makefile.configureOnOpen": true,
+    "C_Cpp.default.compilerPath": "/usr/bin/clang"
 }

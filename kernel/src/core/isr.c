@@ -16,6 +16,8 @@ The CPU will load the segment-selector value from the associated IDT descriptor 
 
 // http://wiki.osdev.org/Exceptions
 
+
+// no impl 
 void isr_handler()
 {
     kprintf("got some interrupt\n");
@@ -24,6 +26,6 @@ void isr_handler()
 void exception_handler()
 {
     kprintf("got some exception\n");
-    //CLI();
-    //HLT();
+    CLI();
+    HLT();
 }

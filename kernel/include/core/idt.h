@@ -25,10 +25,10 @@ struct idt_gate_desc {
     u8 dpl : 2;
     u8 p : 1;
     u16 high_offset;
-};
+} __attribute__((packed));
 
 extern struct idt_descriptor idt_desc;
-extern u32 *isr_exception_table;
+extern void *isr_exception_table[];
 
 extern void idt_flush();
 
