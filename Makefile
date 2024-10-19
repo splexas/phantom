@@ -12,7 +12,7 @@ ISO_DIR = iso/
 BIN_OUTPUT = $(ISO_DIR)boot/kernel.bin
 ISO_OUTPUT = phantom.iso
 
-QEMU_SYSTEM = qemu-system-x86_64
+QEMU_SYSTEM = qemu-system-i386
 
 SRCFILES := kernel/boot/entry.asm \
 	kernel/boot/multiboot2.asm \
