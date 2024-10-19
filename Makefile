@@ -1,5 +1,5 @@
 CC = clang
-CFLAGS = -Wall -Wextra -O3 -m32 -nostdlib -ffreestanding -Ikernel/boot -Ikernel/include
+CFLAGS = -Wall -Wextra -m32 -nostdlib -ffreestanding -Ikernel/boot -Ikernel/include
 
 LD = ld
 LDFLAGS = -Tlinker.ld -melf_i386
@@ -18,9 +18,11 @@ SRCFILES := kernel/boot/entry.asm \
 	kernel/boot/multiboot2.asm \
 	kernel/kernel.c \
 	kernel/src/video/vga.c \
+	kernel/src/cpu/gdt.c \
+	kernel/src/cpu/gdt.asm \
 
 BUILD_DIR = build/
-OBJFILES := $(patsubst %.c,$(BUILD_DIR)%.o,$(patsubst %.asm,$(BUILD_DIR)%.o,$(SRCFILES)))
+OBJFILES := $(patsubst %.c,$(BUILD_DIR)%.c.o,$(patsubst %.asm,$(BUILD_DIR)%.asm.o,$(SRCFILES)))
 
 .PHONY: kernel
 default: kernel
@@ -32,11 +34,11 @@ kernel: $(OBJFILES)
 run: $(ISO_OUTPUT)
 	$(QEMU_SYSTEM) -cdrom $(ISO_OUTPUT)
 	
-$(BUILD_DIR)%.o: %.c
+$(BUILD_DIR)%.c.o: %.c
 	@mkdir -p $(dir $@)
 	$(CC) $(CFLAGS) -c -o $@ $<
 
-$(BUILD_DIR)%.o: %.asm
+$(BUILD_DIR)%.asm.o: %.asm
 	@mkdir -p $(dir $@)
 	$(ASSEMBLER) -felf32 $< -o $@
 
