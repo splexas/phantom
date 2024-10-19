@@ -1,6 +1,7 @@
 #include <multiboot2.h>
 #include <stdint.h>
 #include <video/vga.h>
+#include <cpu/gdt.h>
 
 struct multiboot_info {
     uint32_t size;
@@ -12,6 +13,8 @@ __attribute__((noreturn)) void kmain(uint32_t magic,
                                      struct multiboot_info *mb_info_addr)
 {
     vga_init();
+    gdt_init();
+    vga_printf("GDT was initialized\n");
     for (;;)
         ;
 }
