@@ -1,5 +1,5 @@
 CC = clang
-CFLAGS = -Wall -Wextra -m32 -nostdlib -ffreestanding -Ikernel/boot
+CFLAGS = -Wall -Wextra -O3 -m32 -nostdlib -ffreestanding -Ikernel/boot -Ikernel/include
 
 LD = ld
 LDFLAGS = -Tlinker.ld -melf_i386
@@ -17,6 +17,7 @@ QEMU_SYSTEM = qemu-system-i386
 SRCFILES := kernel/boot/entry.asm \
 	kernel/boot/multiboot2.asm \
 	kernel/kernel.c \
+	kernel/src/video/vga.c \
 
 BUILD_DIR = build/
 OBJFILES := $(patsubst %.c,$(BUILD_DIR)%.o,$(patsubst %.asm,$(BUILD_DIR)%.o,$(SRCFILES)))

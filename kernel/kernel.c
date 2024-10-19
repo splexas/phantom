@@ -1,5 +1,6 @@
 #include <multiboot2.h>
 #include <stdint.h>
+#include <video/vga.h>
 
 struct multiboot_info {
     uint32_t size;
@@ -10,6 +11,7 @@ struct multiboot_info {
 __attribute__((noreturn)) void kmain(uint32_t magic,
                                      struct multiboot_info *mb_info_addr)
 {
+    vga_init();
     for (;;)
         ;
 }
