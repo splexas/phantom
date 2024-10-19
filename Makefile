@@ -1,5 +1,5 @@
 CC = clang
-CFLAGS = -Wall -Wextra -m32 -nostdlib -ffreestanding
+CFLAGS = -Wall -Wextra -m32 -nostdlib -ffreestanding -Ikernel/boot
 
 LD = ld
 LDFLAGS = -Tlinker.ld -melf_i386
@@ -41,7 +41,7 @@ $(BUILD_DIR)%.o: %.asm
 
 .PHONY: format
 format: 
-	@find . -iname '*.c' -o -iname '*.h' | xargs clang-format -i
+	@find . -path ./kernel/boot -prune -o -iname '*.c' -print -o -iname '*.h' -print | xargs clang-format -i
 
 .PHONY: clean
 clean: $(BUILD_DIR)
