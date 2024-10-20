@@ -17,7 +17,6 @@ isr_stub_%+%1:
     call exception_handler
     popad
     add esp, 8 ; cleanup error code and exception index
-    sti
     iret 
 %endmacro
 
@@ -30,7 +29,6 @@ isr_stub_%+%1:
     call exception_handler
     popad
     add esp, 8 ; cleanup error code and exception index
-    sti
     iret
 %endmacro
 
