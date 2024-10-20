@@ -1,3 +1,4 @@
 phantom.iso
 iso/boot/kernel.bin
 build/
+test/
