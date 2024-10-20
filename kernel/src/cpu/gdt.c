@@ -3,7 +3,7 @@
 gdtr_t gdtr;
 static gdt_segment_t gdt_segments[5];
 
-void gdt_set_gate(uint8_t index, uint32_t base, uint32_t limit, uint8_t access,
+void gdt_set_segment(uint8_t index, uint32_t base, uint32_t limit, uint8_t access,
                   uint8_t flags)
 {
     gdt_segments[index].limit_low = limit & 0xffff;
@@ -17,16 +17,16 @@ void gdt_set_gate(uint8_t index, uint32_t base, uint32_t limit, uint8_t access,
 
 void gdt_init()
 {
-    gdt_set_gate(0, 0, 0, 0, 0);
+    gdt_set_segment(0, 0, 0, 0, 0);
 
     // kernel mode code segment
-    gdt_set_gate(1, 0, 0xfffff, 0x9a, 0xc);
+    gdt_set_segment(1, 0, 0xfffff, 0x9a, 0xc);
     // kernel mode data segment
-    gdt_set_gate(2, 0, 0xfffff, 0x92, 0xc);
+    gdt_set_segment(2, 0, 0xfffff, 0x92, 0xc);
     // user mode code segment
-    gdt_set_gate(3, 0, 0xfffff, 0xfa, 0xc);
+    gdt_set_segment(3, 0, 0xfffff, 0xfa, 0xc);
     // user mode data segment
-    gdt_set_gate(4, 0, 0xfffff, 0xf2, 0xc);
+    gdt_set_segment(4, 0, 0xfffff, 0xf2, 0xc);
 
     gdtr.size = sizeof(gdt_segments) - 1;
     gdtr.offset = (uint32_t)gdt_segments;
