@@ -3,18 +3,32 @@
 
 #include <multiboot2.h>
 #include <stdint.h>
+
+#include <lib/stdout.h>
+#include <video/serial.h>
 #include <video/vga.h>
 
 __attribute__((noreturn)) void kmain(uint32_t magic, uint32_t mb_info_addr)
 {
     vga_init();
+    stdout_set_stream(vga_putchar);
+
+    kprintf("Serial\n");
+
+    if (serial_init() != 0) {
+        kprintf("Failed to initialize serial monitor.\n");
+        goto idle;
+    }
+
+    stdout_set_stream(serial_putchar);
+
     if (magic != MULTIBOOT2_BOOTLOADER_MAGIC) {
-        vga_printf("Invalid magic number: %x\n", magic);
+        kprintf("Invalid magic number: %x\n", magic);
         goto idle;
     }
 
     if (mb_info_addr & 7) {
-        vga_printf("Unaligned mbi: %x\n", mb_info_addr);
+        kprintf("Unaligned mbi: %x\n", mb_info_addr);
         goto idle;
     }
 
@@ -28,16 +42,16 @@ __attribute__((noreturn)) void kmain(uint32_t magic, uint32_t mb_info_addr)
         case MULTIBOOT_TAG_TYPE_BASIC_MEMINFO: {
             struct multiboot_tag_basic_meminfo *meminfo =
                 (struct multiboot_tag_basic_meminfo *)tag;
-            vga_printf("basic_meminfo:\n");
-            vga_printf("  mem_lower=%x\n", meminfo->mem_lower);
-            vga_printf("  mem_upper=%x\n", meminfo->mem_upper);
+            kprintf("basic_meminfo:\n");
+            kprintf("  mem_lower=%x\n", meminfo->mem_lower);
+            kprintf("  mem_upper=%x\n", meminfo->mem_upper);
             break;
         }
         case MULTIBOOT_TAG_TYPE_MMAP: {
 
             multiboot_memory_map_t *mmap;
 
-            vga_printf("mmap:\n");
+            kprintf("mmap:\n");
 
             for (mmap = ((struct multiboot_tag_mmap *)tag)->entries;
                  (multiboot_uint8_t *)mmap <
@@ -47,10 +61,9 @@ __attribute__((noreturn)) void kmain(uint32_t magic, uint32_t mb_info_addr)
                           *)((uint32_t)mmap +
                              ((struct multiboot_tag_mmap *)tag)->entry_size)) {
 
-                vga_printf("  base_addr=%x,"
-                           " length=%x, type=%x\n",
-                           (uint32_t)mmap->addr, (uint32_t)mmap->len,
-                           mmap->type);
+                kprintf("  base_addr=%x,"
+                        " length=%x, type=%x\n",
+                        (uint32_t)mmap->addr, (uint32_t)mmap->len, mmap->type);
             }
 
             break;
@@ -64,9 +77,9 @@ __attribute__((noreturn)) void kmain(uint32_t magic, uint32_t mb_info_addr)
     }
 
     gdt_init();
-    vga_printf("GDT was initialized\n");
+    kprintf("GDT was initialized\n");
     idt_init();
-    vga_printf("IDT was initialized\n");
+    kprintf("IDT was initialized\n");
 
 idle:
     for (;;)

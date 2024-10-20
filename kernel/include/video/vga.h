@@ -28,7 +28,5 @@ enum vga_color {
 
 void vga_init();
 void vga_putchar(char c);
-void vga_vprintf(const char *fmt, va_list list);
-void vga_printf(const char *fmt, ...);
 
 #endif
