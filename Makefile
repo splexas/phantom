@@ -20,6 +20,9 @@ SRCFILES := kernel/boot/entry.asm \
 	kernel/src/video/vga.c \
 	kernel/src/cpu/gdt.c \
 	kernel/src/cpu/gdt.asm \
+	kernel/src/cpu/idt.c \
+	kernel/src/cpu/idt.asm \
+	kernel/src/cpu/isr.c \
 
 BUILD_DIR = build/
 OBJFILES := $(patsubst %.c,$(BUILD_DIR)%.c.o,$(patsubst %.asm,$(BUILD_DIR)%.asm.o,$(SRCFILES)))

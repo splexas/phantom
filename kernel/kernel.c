@@ -1,4 +1,6 @@
 #include <cpu/gdt.h>
+#include <cpu/idt.h>
+
 #include <multiboot2.h>
 #include <stdint.h>
 #include <video/vga.h>
@@ -60,8 +62,11 @@ __attribute__((noreturn)) void kmain(uint32_t magic, uint32_t mb_info_addr)
         tag = (struct multiboot_tag *)((multiboot_uint8_t *)tag +
                                        ((tag->size + 7) & ~7));
     }
+
     gdt_init();
     vga_printf("GDT was initialized\n");
+    idt_init();
+    vga_printf("IDT was initialized\n");
 
 idle:
     for (;;)
