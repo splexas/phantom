@@ -16,7 +16,7 @@ void kprintf(const char *fmt, ...)
 {
     if (__DEFAULT_STDOUT == NULL)
         return;
-    
+
     va_list list;
     va_start(list, fmt);
     npf_vpprintf(__DEFAULT_STDOUT, NULL, fmt, list);
