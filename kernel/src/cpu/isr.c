@@ -54,5 +54,5 @@ void exception_handler(int_frame_t frame)
         kprintf(" CS : 0x%08X  EFLAGS: 0x%08X\n", frame.cs, frame.eflags);
         kprintf("=====================\n");
     }
-    asm volatile("hlt;");
+    for (;;) asm volatile("hlt");
 }

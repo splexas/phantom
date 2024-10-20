@@ -12,7 +12,11 @@ extern exception_handler
 %macro isr_err_stub 1
 isr_stub_%+%1:
     cli
-    pushad
+    ; push eflags
+    ; push cs
+    ; push eip
+    ; push err_code
+    pushad ; Push EAX, ECX, EDX, EBX, original ESP, EBP, ESI, and EDI
     push %1
     call exception_handler
     popad
@@ -23,8 +27,11 @@ isr_stub_%+%1:
 %macro isr_no_err_stub 1
 isr_stub_%+%1:
     cli
+    ; push eflags
+    ; push cs
+    ; push eip
     push 0
-    pushad
+    pushad ; Push EAX, ECX, EDX, EBX, original ESP, EBP, ESI, and EDI
     push %1
     call exception_handler
     popad

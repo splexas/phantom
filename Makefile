@@ -38,7 +38,7 @@ kernel: $(OBJFILES)
 
 .PHONY: run
 run: $(ISO_OUTPUT)
-	$(QEMU_SYSTEM) -cdrom $(ISO_OUTPUT) -serial stdio
+	$(QEMU_SYSTEM) -cdrom $(ISO_OUTPUT) -serial stdio -d int
 	
 $(BUILD_DIR)%.c.o: %.c
 	@mkdir -p $(dir $@)
