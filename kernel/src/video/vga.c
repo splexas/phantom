@@ -85,6 +85,25 @@ void vga_vprintf(const char *fmt, va_list list)
                     vga_putchar(buf[--i]);
                 break;
             }
+            case 'u': {
+                unsigned int num = va_arg(list, unsigned int);
+                char buf[11];
+                unsigned long i = 0;
+                
+                if (num == 0) {
+                    vga_putchar('0');
+                    break;
+                }
+
+                do {
+                    buf[i++] = (num % 10) + '0';
+                    num /= 10;
+                } while (num && i < sizeof(buf));
+
+                while (i > 0)
+                    vga_putchar(buf[--i]);
+                break;
+            }
             case 'p':
             case 'x': {
                 unsigned int num = va_arg(list, unsigned int);
