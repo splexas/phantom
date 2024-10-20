@@ -20,7 +20,8 @@ typedef struct gdt_segment_desc {
 
 extern gdtr_t gdtr;
 
-void gdt_set_gate(uint8_t index, uint32_t base, uint32_t limit, uint8_t access, uint8_t flags);
+void gdt_set_gate(uint8_t index, uint32_t base, uint32_t limit, uint8_t access,
+                  uint8_t flags);
 void gdt_init();
 extern void gdt_flush();
 

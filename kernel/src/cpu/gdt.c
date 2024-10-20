@@ -3,7 +3,8 @@
 gdtr_t gdtr;
 static gdt_segment_t gdt_segments[5];
 
-void gdt_set_gate(uint8_t index, uint32_t base, uint32_t limit, uint8_t access, uint8_t flags)
+void gdt_set_gate(uint8_t index, uint32_t base, uint32_t limit, uint8_t access,
+                  uint8_t flags)
 {
     gdt_segments[index].limit_low = limit & 0xffff;
     gdt_segments[index].base_low = base & 0xffff;
