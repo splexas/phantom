@@ -1,47 +1,58 @@
 #include <cpu/isr.h>
 #include <lib/stdout.h>
 
-static const char *exception_names[32] = {"Division By Zero",
-                                          "Debug",
-                                          "Nonmaskable Interrupt",
-                                          "Breakpoint",
-                                          "Overflow",
-                                          "Bound Range Exceeded",
-                                          "Invalid Opcode",
-                                          "Device Not Available",
-                                          "Double Fault",
-                                          "Coprocessor Segment Overrun",
-                                          "Invalid TSS",
-                                          "Segment Not Present",
-                                          "Stack Segment Fault",
-                                          "General Protection Fault",
-                                          "Page Fault",
-                                          "Reserved",
-                                          "x87 FPU Error",
-                                          "Alignment Check",
-                                          "Machine Check",
-                                          "Simd Exception",
-                                          "Virtualization Exception",
-                                          "Control Protection Exception",
-                                          "Reserved",
-                                          "Reserved",
-                                          "Reserved",
-                                          "Reserved",
-                                          "Reserved",
-                                          "Reserved",
-                                          "Hypervisor Injection Exception",
-                                          "VMM Communication Exception",
-                                          "Security Exception",
-                                          "Reserved"};
+static const exception_info_t exceptions[32] = {
+    {"Division Error", true},
+    {"Debug", false},
+    {"Non-maskable Interrupt", false},
+    {"Breakpoint", false},
+    {"Overflow", false},
+    {"Bound Range Exceeded", true},
+    {"Invalid Opcode", true},
+    {"Device Not Available", true},
+    {"Double Fault", true},
+    {"Coprocessor Segment Overrun", true},
+    {"Invalid TSS", true},
+    {"Segment Not Present", true},
+    {"Stack-Segment Fault", true},
+    {"General Protection Fault", true},
+    {"Page Fault", true},
+    {"Reserved", false},
+    {"x87 Floating-Point Exception", true},
+    {"Alignment Check", true},
+    {"Machine Check", false},
+    {"SIMD Floating-Point Exception", true},
+    {"Virtualization Exception", true},
+    {"Control Protection Exception", true},
+    {"Reserved", false},
+    {"Reserved", false},
+    {"Reserved", false},
+    {"Reserved", false},
+    {"Reserved", false},
+    {"Reserved", false},
+    {"Hypervisor Injection Exception", true},
+    {"VMM Communication Exception", true},
+    {"Security Exception", true},
+    {"Reserved", false},
+};
 
 void exception_handler(int_frame_t frame)
 {
-    kprintf(
-        "Exception (int_no: %u (%s), err: %u):\n  edi: 0x%08x, esi: 0x%08x, ebp: 0x%08x, "
-        "esp: "
-        "0x%08x\n  ebx: 0x%08x, edx: 0x%08x, ecx: 0x%08x, eax: 0x%08x\n  eip: 0x%08x, cs: 0x%08x, eflags: 0x%08x\n",
-        frame.int_no, exception_names[frame.int_no], frame.err_code, frame.edi,
-        frame.esi, frame.ebp, frame.esp, frame.ebx, frame.edx, frame.ecx,
-        frame.eax, frame.eip, frame.cs, frame.eflags);
+    if (exceptions[frame.int_no].panic) {
+        kprintf("=== KERNEL PANIC ===\n");
+        kprintf("Cause: %s (interrupt ID: %u)\n", exceptions[frame.int_no].name,
+                frame.int_no);
+        if (frame.err_code)
+            kprintf("Error code: %u\n", frame.err_code);
+        kprintf("--- Register dump ---\n");
+        kprintf(" EAX: 0x%08X  EBX: 0x%08X  ECX: 0x%08X\n", frame.eax,
+                frame.ebx, frame.ecx);
+        kprintf(" EDX: 0x%08X  EDI: 0x%08X  ESI: 0x%08X\n", frame.edx,
+                frame.edi, frame.esi);
+        kprintf(" EBP: 0x%08X  ESP: 0x%08X  EIP: 0x%08X\n", frame.ebp,
+                frame.esp, frame.eip);
+        kprintf(" CS : 0x%08X  EFLAGS: 0x%08X\n", frame.cs, frame.eflags);
+        kprintf("=====================\n");
+    }
     asm volatile("hlt;");
 }
