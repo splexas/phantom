@@ -87,14 +87,12 @@ void vga_vprintf(const char *fmt, va_list list)
             }
             case 'u': {
                 unsigned int num = va_arg(list, unsigned int);
-                char buf[11];
-                unsigned long i = 0;
-                
                 if (num == 0) {
                     vga_putchar('0');
                     break;
                 }
-
+                char buf[11];
+                unsigned long i = 0;
                 do {
                     buf[i++] = (num % 10) + '0';
                     num /= 10;
