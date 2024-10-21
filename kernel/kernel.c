@@ -82,6 +82,5 @@ __attribute__((noreturn)) void kmain(uint32_t magic, uint32_t mb_info_addr)
     kprintf("IDT was initialized\n");
 
 idle:
-    for (;;)
-        ;
+    for (;;); // we let other tasks work
 }

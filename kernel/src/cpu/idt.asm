@@ -11,7 +11,6 @@ idt_flush:
 extern exception_handler
 %macro isr_err_stub 1
 isr_stub_%+%1:
-    cli
     ; push eflags
     ; push cs
     ; push eip
@@ -26,7 +25,6 @@ isr_stub_%+%1:
 
 %macro isr_no_err_stub 1
 isr_stub_%+%1:
-    cli
     ; push eflags
     ; push cs
     ; push eip

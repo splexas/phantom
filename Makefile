@@ -25,6 +25,9 @@ SRCFILES := kernel/boot/entry.asm \
 	kernel/src/cpu/idt.c \
 	kernel/src/cpu/idt.asm \
 	kernel/src/cpu/isr.c \
+	kernel/src/cpu/irq.c \
+	kernel/src/cpu/irq.asm \
+	kernel/src/cpu/pic.c \
 	kernel/src/lib/stdout.c \
 
 BUILD_DIR = build/
