@@ -1,5 +1,5 @@
 CC = clang
-CFLAGS = -Wall -Wextra -m32 -nostdlib -ffreestanding -Ikernel/boot -Ikernel/include -Ikernel/external
+CFLAGS = -g -Wall -Wextra -m32 -nostdlib -ffreestanding -Ikernel/boot -Ikernel/include -Ikernel/external
 
 LD = ld
 LDFLAGS = -Tlinker.ld -melf_i386
@@ -29,6 +29,7 @@ SRCFILES := kernel/boot/entry.asm \
 	kernel/src/cpu/irq.asm \
 	kernel/src/cpu/pic.c \
 	kernel/src/lib/stdout.c \
+	kernel/src/cpu/irqs/keyboard.c \
 
 BUILD_DIR = build/
 OBJFILES := $(patsubst %.c,$(BUILD_DIR)%.c.o,$(patsubst %.asm,$(BUILD_DIR)%.asm.o,$(SRCFILES)))
@@ -36,12 +37,12 @@ OBJFILES := $(patsubst %.c,$(BUILD_DIR)%.c.o,$(patsubst %.asm,$(BUILD_DIR)%.asm.
 .PHONY: kernel
 default: kernel
 kernel: $(OBJFILES)
-	$(LD) $(LDFLAGS) -o $(BIN_OUTPUT) $^
+	$(LD) -g $(LDFLAGS) -o $(BIN_OUTPUT) $^
 	$(GRUB_MKRESCUE) -o $(ISO_OUTPUT) $(ISO_DIR) 
 
 .PHONY: run
 run: $(ISO_OUTPUT)
-	$(QEMU_SYSTEM) -cdrom $(ISO_OUTPUT) -serial stdio -d int
+	$(QEMU_SYSTEM) -cdrom $(ISO_OUTPUT) -serial stdio -d int -D dump.txt
 	
 $(BUILD_DIR)%.c.o: %.c
 	@mkdir -p $(dir $@)
