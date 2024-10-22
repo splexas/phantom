@@ -4,31 +4,29 @@
 #include <multiboot2.h>
 #include <stdint.h>
 
-#include <lib/stdout.h>
 #include <video/serial.h>
 #include <video/vga.h>
+#include <log.h>
 
 __attribute__((noreturn)) void kmain(uint32_t magic, uint32_t mb_info_addr)
 {
     vga_init();
     stdout_set_stream(vga_putchar);
 
-    kprintf("Serial\n");
-
     if (serial_init() != 0) {
-        kprintf("Failed to initialize serial monitor.\n");
+        klog(KLOG_ERROR, "Failed to initialize serial monitor.\n");
         goto idle;
     }
 
     stdout_set_stream(serial_putchar);
 
     if (magic != MULTIBOOT2_BOOTLOADER_MAGIC) {
-        kprintf("Invalid magic number: %x\n", magic);
+        klog(KLOG_FATAL, "Invalid magic number: %x\n", magic);
         goto idle;
     }
 
     if (mb_info_addr & 7) {
-        kprintf("Unaligned mbi: %x\n", mb_info_addr);
+        klog(KLOG_FATAL, "Unaligned mbi: %x\n", mb_info_addr);
         goto idle;
     }
 
@@ -42,16 +40,16 @@ __attribute__((noreturn)) void kmain(uint32_t magic, uint32_t mb_info_addr)
         case MULTIBOOT_TAG_TYPE_BASIC_MEMINFO: {
             struct multiboot_tag_basic_meminfo *meminfo =
                 (struct multiboot_tag_basic_meminfo *)tag;
-            kprintf("basic_meminfo:\n");
-            kprintf("  mem_lower=%x\n", meminfo->mem_lower);
-            kprintf("  mem_upper=%x\n", meminfo->mem_upper);
+            klog(KLOG_INFO, "basic_meminfo:\n");
+            klog(KLOG_INFO, "  mem_lower=%x\n", meminfo->mem_lower);
+            klog(KLOG_INFO, "  mem_upper=%x\n", meminfo->mem_upper);
             break;
         }
         case MULTIBOOT_TAG_TYPE_MMAP: {
 
             multiboot_memory_map_t *mmap;
 
-            kprintf("mmap:\n");
+            klog(KLOG_INFO, "mmap:\n");
 
             for (mmap = ((struct multiboot_tag_mmap *)tag)->entries;
                  (multiboot_uint8_t *)mmap <
@@ -61,7 +59,7 @@ __attribute__((noreturn)) void kmain(uint32_t magic, uint32_t mb_info_addr)
                           *)((uint32_t)mmap +
                              ((struct multiboot_tag_mmap *)tag)->entry_size)) {
 
-                kprintf("  base_addr=%x,"
+                klog(KLOG_INFO, "  base_addr=%x,"
                         " length=%x, type=%x\n",
                         (uint32_t)mmap->addr, (uint32_t)mmap->len, mmap->type);
             }
@@ -77,9 +75,9 @@ __attribute__((noreturn)) void kmain(uint32_t magic, uint32_t mb_info_addr)
     }
 
     gdt_init();
-    kprintf("GDT was initialized\n");
+    klog(KLOG_INFO, "GDT was initialized\n");
     idt_init();
-    kprintf("IDT was initialized\n");
+    klog(KLOG_INFO, "IDT was initialized\n");
 
 idle:
     for (;;)

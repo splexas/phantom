@@ -12,6 +12,14 @@ void stdout_set_stream(void (*putch)(char c))
     __DEFAULT_STDOUT = (npf_putc)putch;
 }
 
+void kvprintf(const char *fmt, va_list args)
+{
+    if (__DEFAULT_STDOUT == NULL)
+        return;
+
+    npf_vpprintf(__DEFAULT_STDOUT, NULL, fmt, args);
+}
+
 void kprintf(const char *fmt, ...)
 {
     if (__DEFAULT_STDOUT == NULL)
@@ -19,6 +27,6 @@ void kprintf(const char *fmt, ...)
 
     va_list list;
     va_start(list, fmt);
-    npf_vpprintf(__DEFAULT_STDOUT, NULL, fmt, list);
+    kvprintf(fmt, list);
     va_end(list);
 }
